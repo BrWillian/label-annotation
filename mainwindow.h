@@ -18,6 +18,10 @@ public:
 private slots:
     void on_actionopen_triggered();
 
+    void on_listView_doubleClicked(const QModelIndex &index);
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
