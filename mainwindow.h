@@ -12,10 +12,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QPixmap img;
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
+    void resizeEvent(QResizeEvent* event);
     void on_actionopen_triggered();
 
     void on_listView_doubleClicked(const QModelIndex &index);

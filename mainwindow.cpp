@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->label_3->adjustSize();
 }
 
 MainWindow::~MainWindow()
@@ -45,18 +46,13 @@ void MainWindow::on_actionopen_triggered()
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
-    QGraphicsScene scene;
-
+    img = QPixmap(index.data().toString());
+    ui->label_3->setPixmap(img.scaled(ui->label_3->size(), Qt::KeepAspectRatio));
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::resizeEvent(QResizeEvent* event)
 {
-    QGraphicsScene scene;
-    QPixmap pixmap("image.jpeg");
-    scene.addPixmap(pixmap);
-    //ui->viewer->setScene(&scene);
-
-    // add here
-    ui->graphicsView->setScene(&scene);
-    ui->graphicsView->show();
+    QPixmap px = img.scaled(ui->label_3->size(), Qt::KeepAspectRatio);
+    ui->label_3->setPixmap(px);
+    QWidget::resizeEvent(event);
 }

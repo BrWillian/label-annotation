@@ -27,25 +27,6 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QGraphicsView" name="graphicsView">
-      <property name="minimumSize">
-       <size>
-        <width>556</width>
-        <height>555</height>
-       </size>
-      </property>
-      <property name="mouseTracking">
-       <bool>false</bool>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="interactive">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="1">
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
@@ -62,7 +43,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>999999</width>
+        <width>270</width>
         <height>999999</height>
        </size>
       </property>
@@ -73,6 +54,13 @@
        <string>Label Editing</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="6" column="0">
+        <widget class="QListView" name="listView">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
@@ -114,20 +102,25 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QListView" name="listView">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pushButton_2">
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>556</width>
+        <height>555</height>
+       </size>
+      </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
     </item>
