@@ -1,19 +1,22 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-#include <experimental/filesystem>
+#include <fstream>
 #include <vector>
 
 using namespace std;
-namespace fs = experimental::filesystem;
 
 class filesystem
 {
 private:
     vector<string>imgs;
+    vector<string>labels;
 public:
     filesystem();
-    void List_dir(string dir);
-    vector<string> GetImgs();
+    void listDir(string dir);
+    vector<string> getImgs();
+    vector<string> getLabels();
+    static void makeLabels(string labels);
+    void loadLabels();
 };
 
 #endif // FILESYSTEM_H
