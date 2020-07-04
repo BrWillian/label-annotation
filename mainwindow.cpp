@@ -3,9 +3,12 @@
 #include <QFileDialog>
 #include <iostream>
 #include <thread>
-#include <filesystem.h>
 #include <vector>
 #include <QStringListModel>
+#include <filesystem.h>
+
+//Defines
+#define Null    ""
 
 using namespace std;
 
@@ -14,7 +17,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->label_3->adjustSize();
+
+
+    file->loadLabels();
+    auto labels = file->getLabels();
+
+    QString arr;
+
+    for(auto it=labels.begin(); it!=labels.end(); it++)
+    {
+        arr.append(QString::fromStdString(*it) + "\n");
+    }
+
+    ui->textEdit->setText(arr);
 }
 
 MainWindow::~MainWindow()
@@ -26,33 +41,69 @@ void MainWindow::on_actionopen_triggered()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    filesystem *file = new filesystem;
-
-    std::thread t1(&filesystem::List_dir, file, path.toStdString());
-    t1.join();
-
-    auto imgs = file->GetImgs();
-
-    QStringList list;
-
-    for(auto it = imgs.begin(); it != imgs.end(); it++)
+    if(!(path.toStdString() == Null))
     {
-        list << QString::fromStdString(*it);
+        std::thread t1(&filesystem::listDir, file, path.toStdString());
+        t1.join();
+
+        auto imgs = file->getImgs();
+
+        QStringList list;
+
+        for(auto it = imgs.begin(); it != imgs.end(); it++)
+        {
+            list << QString::fromStdString(*it);
+        }
+
+        ui->listView->setModel(new QStringListModel(list));
     }
-
-    ui->listView->setModel(new QStringListModel(list));
-
 }
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
     img = QPixmap(index.data().toString());
     ui->label_3->setPixmap(img.scaled(ui->label_3->size(), Qt::KeepAspectRatio));
+    ui->label_3->setAlignment(Qt::AlignCenter);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
-    QPixmap px = img.scaled(ui->label_3->size(), Qt::KeepAspectRatio);
-    ui->label_3->setPixmap(px);
-    QWidget::resizeEvent(event);
+    if(!img.isNull())
+    {
+        QPixmap px = img.scaled(ui->label_3->size(), Qt::KeepAspectRatio);
+        ui->label_3->setPixmap(px);
+        ui->label_3->setAlignment(Qt::AlignCenter);
+        QWidget::resizeEvent(event);
+    }
+}
+void MainWindow::on_pushButton_clicked()
+{
+    QString labels = ui->textEdit->toPlainText();
+    if(!labels.isEmpty())
+    {
+        file->makeLabels(labels.toStdString());
+        ui->radioButton->setChecked(false);
+        ui->comboBox->clear();
+    }
+}
+void MainWindow::on_radioButton_clicked(bool checked)
+{
+    if(checked)
+    {
+        ui->comboBox->setEnabled(true);
+        ui->comboBox->clear();
+
+        file->loadLabels();
+
+        auto labels = file->getLabels();
+
+        for(auto it=labels.begin(); it!=labels.end(); it++)
+        {
+            ui->comboBox->addItem(QString::fromStdString(*it));
+        }
+    }
+    else{
+        ui->comboBox->setEnabled(false);
+        ui->comboBox->clear();
+    }
 }
