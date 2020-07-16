@@ -6,6 +6,8 @@
 #include <vector>
 #include <QStringListModel>
 #include <filesystem.h>
+#include <annotation.h>
+#include "QtWidgets"
 
 //Defines
 #define Null    ""
@@ -17,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     file->loadLabels();
     auto labels = file->getLabels();
@@ -54,25 +55,39 @@ void MainWindow::on_actionopen_triggered()
         {
             list << QString::fromStdString(*it);
         }
-
         ui->listView->setModel(new QStringListModel(list));
     }
 }
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
-    img = QPixmap(index.data().toString());
-    ui->label_3->setPixmap(img.scaled(ui->label_3->size(), Qt::KeepAspectRatio));
-    ui->label_3->setAlignment(Qt::AlignCenter);
+    QString str = index.data().toString();
+    ui->mdiArea->closeAllSubWindows();
+    customWidget = new annotation();
+    ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
+    customWidget->parentWidget()->resize(ui->mdiArea->size());
+    customWidget->parentWidget()->updateGeometry();
+    customWidget->setImage(index.data().toString());
+    //customWidget->setAreaDraw(ui->mdiArea->size());
+    //customWidget->setFixedSize(ui->mdiArea->size());
+    customWidget->show();
+
+
+
+    //img = QPixmap(index.data().toString());
+    //ui->mdiArea->setBackground(img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio));
+    //ui->label_3->setPixmap(img.scaled(ui->label_3->size(), Qt::KeepAspectRatio));
+    //ui->label_3->setAlignment(Qt::AlignCenter);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
     if(!img.isNull())
     {
-        QPixmap px = img.scaled(ui->label_3->size(), Qt::KeepAspectRatio);
-        ui->label_3->setPixmap(px);
-        ui->label_3->setAlignment(Qt::AlignCenter);
+        img_s = img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio);
+        //ui->mdiArea->setBackground(img_s);
+        //ui->label_3->setPixmap(img_s);
+        //ui->label_3->setAlignment(Qt::AlignCenter);
         QWidget::resizeEvent(event);
     }
 }
@@ -85,6 +100,8 @@ void MainWindow::on_pushButton_clicked()
         ui->radioButton->setChecked(false);
         ui->comboBox->clear();
     }
+    ui->textEdit->append(QString::number(img_s.size().width()));
+    ui->textEdit->append(QString::number(img_s.size().height()));
 }
 void MainWindow::on_radioButton_clicked(bool checked)
 {

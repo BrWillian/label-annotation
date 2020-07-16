@@ -10,9 +10,10 @@ filesystem::filesystem()
 }
 void filesystem::listDir(string dir)
 {
+    imgs.clear();
     for (const auto & directory: fs::directory_iterator(dir))
     {
-        if(directory.path().extension() == ".png")
+        if(directory.path().extension() == ".png" || directory.path().extension() == ".jpeg" || directory.path().extension() == ".jpg")
         {
             imgs.push_back(directory.path());
         }

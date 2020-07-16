@@ -1,7 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <filesystem.h>
+#include <annotation.h>
 #include <QMainWindow>
+#include <QMouseEvent>
+#include <QPainter>
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +16,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    annotation *customWidget;
     ~MainWindow();
 
 private slots:
@@ -30,6 +34,7 @@ private:
     Ui::MainWindow *ui;
     filesystem *file = new filesystem;
     QPixmap img;
+    QPixmap img_s;
 };
 
 #endif // MAINWINDOW_H
