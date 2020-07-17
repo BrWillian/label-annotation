@@ -1,17 +1,17 @@
-#ifndef FILESYSTEM_H
-#define FILESYSTEM_H
+#ifndef FILESYS_H
+#define FILESYS_H
 #include <fstream>
 #include <vector>
 
 using namespace std;
 
-class filesystem
+class filesys
 {
 private:
     vector<string>imgs;
     vector<string>labels;
 public:
-    filesystem();
+    filesys();
     void listDir(string dir);
     vector<string> getImgs();
     vector<string> getLabels();
@@ -19,4 +19,4 @@ public:
     void loadLabels();
 };
 
-#endif // FILESYSTEM_H
+#endif // FILESYS_H

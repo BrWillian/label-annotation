@@ -26,13 +26,13 @@ LIBS += -lstdc++fs
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    filesystem.cpp \
-    annotation.cpp
+    annotation.cpp \
+    filesys.cpp
 
 HEADERS += \
         mainwindow.h \
-    filesystem.h \
-    annotation.h
+    annotation.h \
+    filesys.h
 
 FORMS += \
         mainwindow.ui

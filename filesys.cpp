@@ -1,14 +1,14 @@
-#include <filesystem.h>
+#include <filesys.h>
 #include <experimental/filesystem>
 #include <iostream>
 
 namespace fs = std::experimental::filesystem;
 
-filesystem::filesystem()
+filesys::filesys()
 {
 
 }
-void filesystem::listDir(string dir)
+void filesys::listDir(string dir)
 {
     imgs.clear();
     for (const auto & directory: fs::directory_iterator(dir))
@@ -19,11 +19,11 @@ void filesystem::listDir(string dir)
         }
     }
 }
-vector<string> filesystem::getImgs()
+vector<string> filesys::getImgs()
 {
     return imgs;
 }
-void filesystem::makeLabels(string labels)
+void filesys::makeLabels(string labels)
 {
     if(!(fs::is_directory("data")))
     {
@@ -41,7 +41,7 @@ void filesystem::makeLabels(string labels)
     }
 
 }
-void filesystem::loadLabels()
+void filesys::loadLabels()
 {
     string line;
     ifstream file("data/classes.txt");
@@ -56,7 +56,7 @@ void filesystem::loadLabels()
     }
     file.close();
 }
-vector<string> filesystem::getLabels()
+vector<string> filesys::getLabels()
 {
     return labels;
 }

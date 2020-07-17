@@ -68,11 +68,9 @@ void annotation::paintEvent(QPaintEvent *event)
         painter.drawPixmap(0,0, mPix);
     }if(!mousePressed)
     {
-        painter.begin(this);
         int x = mRect.x();
         int y = mRect.y();
         painter.drawText(x-2,y,labelText);
-        painter.end();
     }
     painter.end();
 }

@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include <filesystem.h>
+#include <filesys.h>
 #include <annotation.h>
 #include <QMainWindow>
 #include <QMouseEvent>
@@ -33,7 +33,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    filesystem *file = new filesystem;
+    filesys *file = new filesys;
     QPixmap img;
     QPixmap img_s;
 };

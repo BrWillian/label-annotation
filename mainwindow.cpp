@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 #include <QStringListModel>
-#include <filesystem.h>
+#include <filesys.h>
 #include <annotation.h>
 #include "QtWidgets"
 
@@ -43,7 +43,7 @@ void MainWindow::on_actionopen_triggered()
 
     if(!(path.toStdString() == Null))
     {
-        std::thread t1(&filesystem::listDir, file, path.toStdString());
+        std::thread t1(&filesys::listDir, file, path.toStdString());
         t1.join();
 
         auto imgs = file->getImgs();
