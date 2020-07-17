@@ -19,15 +19,16 @@ public:
     bool mousePressed;
     bool drawStarted;
     void setPenColor(const QColor color);
-    void setAreaDraw(QSize size);
-    void setImage(QString image);
-    ~annotation();
+    QSize setAreaDraw(QSize size, QPixmap image);
+    void setText(QString text);
 
 private:
     Ui::annotation *ui;
     QPainter painter;
     QPixmap mPix;
+    QPixmap mPixtemp;
     QRect mRect;
+    QString labelText;
     QLabel *label = new QLabel(this);
 
     QColor myPenColor;

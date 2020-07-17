@@ -1,7 +1,6 @@
 #include <ui_mainwindow.h>
 #include <mainwindow.h>
 #include <QFileDialog>
-#include <iostream>
 #include <thread>
 #include <vector>
 #include <QStringListModel>
@@ -61,30 +60,31 @@ void MainWindow::on_actionopen_triggered()
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
-    QString str = index.data().toString();
     ui->mdiArea->closeAllSubWindows();
+
+    img = QPixmap(index.data().toString());
     customWidget = new annotation();
     ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
-    customWidget->parentWidget()->resize(ui->mdiArea->size());
+
+
+    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img);
+    customWidget->parentWidget()->resize(size);
     customWidget->parentWidget()->updateGeometry();
-    customWidget->setImage(index.data().toString());
-    //customWidget->setAreaDraw(ui->mdiArea->size());
-    //customWidget->setFixedSize(ui->mdiArea->size());
+    customWidget->setText("Carro");
+
+
+    ui->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     customWidget->show();
 
-
-
-    //img = QPixmap(index.data().toString());
-    //ui->mdiArea->setBackground(img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio));
-    //ui->label_3->setPixmap(img.scaled(ui->label_3->size(), Qt::KeepAspectRatio));
-    //ui->label_3->setAlignment(Qt::AlignCenter);
+    ui->mdiArea->setMaximumSize(size);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
     if(!img.isNull())
     {
-        img_s = img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio);
+        //img_s = img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio);
         //ui->mdiArea->setBackground(img_s);
         //ui->label_3->setPixmap(img_s);
         //ui->label_3->setAlignment(Qt::AlignCenter);
@@ -100,8 +100,6 @@ void MainWindow::on_pushButton_clicked()
         ui->radioButton->setChecked(false);
         ui->comboBox->clear();
     }
-    ui->textEdit->append(QString::number(img_s.size().width()));
-    ui->textEdit->append(QString::number(img_s.size().height()));
 }
 void MainWindow::on_radioButton_clicked(bool checked)
 {

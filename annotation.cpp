@@ -3,35 +3,30 @@
 #include "QMouseEvent"
 #include <QPainter>
 #include "QSize"
-#include <QString>
-#include "QLabel"
 
 annotation::annotation(QWidget *parent) :
     QWidget(parent)//,
    // ui(new Ui::annotation)
 {
     //ui->setupUi(this);
-
     mousePressed = false;
     drawStarted = false;
 
     myPenColor = Qt::blue;
 }
+QSize annotation::setAreaDraw(QSize size, QPixmap image)
+{
 
-annotation::~annotation()
-{
-    //delete ui;
+    mPix = image.scaled(size.width()-30,size.height()-50, Qt::KeepAspectRatio);
+
+    label->setMaximumSize(size.width()-30,size.height()-50);
+    label->setPixmap(mPix);
+
+    return mPix.size();
 }
-void annotation::setAreaDraw(QSize size)
+void annotation::setText(QString text)
 {
-    mPix = QPixmap(size);
-    mPix.fill(Qt::transparent);
-}
-void annotation::setImage(QString image)
-{
-    mPix = QPixmap(QWidget::size());
-    mPix.load(image);
-    label->setPixmap(image);
+    this->labelText = text;
 }
 void annotation::mousePressEvent(QMouseEvent* event)
 {
@@ -46,6 +41,7 @@ void annotation::mouseMoveEvent(QMouseEvent *event)
         mRect.setBottomRight(event->pos());
     }
     update();
+
 }
 void annotation::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -60,7 +56,7 @@ void annotation::paintEvent(QPaintEvent *event)
 
     if(mousePressed)
     {
-        label->setText(" ");
+        label->clear();
         painter.drawPixmap(0,0,mPix);
         painter.drawRect(mRect);
         drawStarted = true;
@@ -70,6 +66,13 @@ void annotation::paintEvent(QPaintEvent *event)
         tempPainter.setPen(QPen(myPenColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         tempPainter.drawRect(mRect);
         painter.drawPixmap(0,0, mPix);
+    }if(!mousePressed)
+    {
+        painter.begin(this);
+        int x = mRect.x();
+        int y = mRect.y();
+        painter.drawText(x-2,y,labelText);
+        painter.end();
     }
     painter.end();
 }
