@@ -21,6 +21,7 @@ public:
     void setPenColor(const QColor color);
     QSize setAreaDraw(QSize size, QPixmap image);
     void setText(QString text);
+    void GenerateColor();
 
 private:
     Ui::annotation *ui;

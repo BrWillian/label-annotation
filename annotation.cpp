@@ -1,8 +1,9 @@
 #include "annotation.h"
-#include "ui_annotation.h"
 #include "QMouseEvent"
 #include <QPainter>
 #include "QSize"
+#include <iostream>
+#include <stdlib.h>
 
 annotation::annotation(QWidget *parent) :
     QWidget(parent)//,
@@ -12,7 +13,7 @@ annotation::annotation(QWidget *parent) :
     mousePressed = false;
     drawStarted = false;
 
-    myPenColor = Qt::blue;
+    std::srand(42);
 }
 QSize annotation::setAreaDraw(QSize size, QPixmap image)
 {
@@ -31,6 +32,7 @@ void annotation::setText(QString text)
 void annotation::mousePressEvent(QMouseEvent* event)
 {
     mousePressed = true;
+    GenerateColor();
     mRect.setTopLeft(event->pos());
     mRect.setBottomRight(event->pos());
 }
@@ -73,4 +75,13 @@ void annotation::paintEvent(QPaintEvent *event)
         painter.drawText(x-2,y,labelText);
     }
     painter.end();
+}
+void annotation::GenerateColor()
+{
+    int r, g, b;
+    r = std::rand() % 255;
+    g = std::rand() % 255;
+    b = std::rand() % 255;
+
+    myPenColor = QColor(r,g,b);
 }
