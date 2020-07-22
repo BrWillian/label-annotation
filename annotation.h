@@ -26,6 +26,8 @@ public:
     void setLabels(std::vector<std::string> tmpLabel);
     QStringList TransformLabels();
 
+    void on_listlabel_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::annotation *ui;
     QPainter painter;

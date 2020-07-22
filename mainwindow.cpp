@@ -72,6 +72,7 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     customWidget->parentWidget()->updateGeometry();
     customWidget->setText("Carro");
 
+    file->loadLabels();
     auto labels = file->getLabels();
     customWidget->setLabels(labels);
 

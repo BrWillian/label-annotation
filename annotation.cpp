@@ -61,6 +61,7 @@ void annotation::mouseReleaseEvent(QMouseEvent *event)
     listlabel->updateGeometry();
     listlabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
     listlabel->setModel(new QStringListModel(TransformLabels()));
+    connect(listlabel, &QListView::doubleClicked, this, &annotation::on_listlabel_doubleClicked);
     dialog->show();
     update();
 }
@@ -114,4 +115,8 @@ QStringList annotation::TransformLabels()
 
     return tmpList;
     //ui->listView->setModel(new QStringListModel(list));
+}
+void annotation::on_listlabel_doubleClicked(const QModelIndex &index)
+{
+    std::cout<<"DEU CERTO";
 }
