@@ -5,6 +5,7 @@
 #include "QPainter"
 #include "QString"
 #include "QLabel"
+#include "vector"
 
 namespace Ui {
 class annotation;
@@ -22,6 +23,8 @@ public:
     QSize setAreaDraw(QSize size, QPixmap image);
     void setText(QString text);
     void GenerateColor();
+    void setLabels(std::vector<std::string> tmpLabel);
+    QStringList TransformLabels();
 
 private:
     Ui::annotation *ui;
@@ -31,7 +34,7 @@ private:
     QRect mRect;
     QString labelText;
     QLabel *label = new QLabel(this);
-
+    std::vector<std::string> labels;
     QColor myPenColor;
 
 protected:

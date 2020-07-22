@@ -4,6 +4,9 @@
 #include "QSize"
 #include <iostream>
 #include <stdlib.h>
+#include "QDialog"
+#include "QListView"
+#include "QStringListModel"
 
 annotation::annotation(QWidget *parent) :
     QWidget(parent)//,
@@ -48,6 +51,17 @@ void annotation::mouseMoveEvent(QMouseEvent *event)
 void annotation::mouseReleaseEvent(QMouseEvent *event)
 {
     mousePressed = false;
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle("Select Class");
+    dialog->resize(125,125);
+    dialog->move(event->globalPos());
+    QListView* listlabel = new QListView(dialog);
+    listlabel->resize(100,100);
+    listlabel->setGeometry(0,25,125,100);
+    listlabel->updateGeometry();
+    listlabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    listlabel->setModel(new QStringListModel(TransformLabels()));
+    dialog->show();
     update();
 }
 void annotation::paintEvent(QPaintEvent *event)
@@ -72,16 +86,32 @@ void annotation::paintEvent(QPaintEvent *event)
     {
         int x = mRect.x();
         int y = mRect.y();
-        painter.drawText(x-2,y,labelText);
+        //painter.drawText(x-2,y,labelText);
     }
     painter.end();
 }
 void annotation::GenerateColor()
 {
-    int r, g, b;
+    unsigned char r, g, b;
     r = std::rand() % 255;
     g = std::rand() % 255;
     b = std::rand() % 255;
 
     myPenColor = QColor(r,g,b);
+}
+void annotation::setLabels(std::vector<std::string> tmpLabels)
+{
+    labels = tmpLabels;
+}
+QStringList annotation::TransformLabels()
+{
+    QStringList tmpList;
+
+    for(auto it = labels.begin(); it != labels.end(); it++)
+    {
+        tmpList << QString::fromStdString(*it);
+    }
+
+    return tmpList;
+    //ui->listView->setModel(new QStringListModel(list));
 }

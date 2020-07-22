@@ -72,6 +72,9 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     customWidget->parentWidget()->updateGeometry();
     customWidget->setText("Carro");
 
+    auto labels = file->getLabels();
+    customWidget->setLabels(labels);
+
 
     ui->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
