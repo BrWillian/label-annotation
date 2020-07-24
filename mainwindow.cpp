@@ -2,16 +2,13 @@
 #include <mainwindow.h>
 #include <QFileDialog>
 #include <thread>
-#include <vector>
 #include <QStringListModel>
 #include <filesys.h>
 #include <annotation.h>
-#include "QtWidgets"
+#include <QtWidgets>
 
 //Defines
 #define Null    ""
-
-using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+    file = new filesys;
     file->loadLabels();
     auto labels = file->getLabels();
 
@@ -81,18 +80,6 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     customWidget->show();
 
     ui->mdiArea->setMaximumSize(size);
-}
-
-void MainWindow::resizeEvent(QResizeEvent* event)
-{
-    if(!img.isNull())
-    {
-        //img_s = img.scaled(ui->mdiArea->size(), Qt::KeepAspectRatio);
-        //ui->mdiArea->setBackground(img_s);
-        //ui->label_3->setPixmap(img_s);
-        //ui->label_3->setAlignment(Qt::AlignCenter);
-        QWidget::resizeEvent(event);
-    }
 }
 void MainWindow::on_pushButton_clicked()
 {

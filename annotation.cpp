@@ -15,6 +15,7 @@ annotation::annotation(QWidget *parent) :
     //ui->setupUi(this);
     mousePressed = false;
     drawStarted = false;
+    windowActive = true;
     label = new QLabel(this);
     std::srand(42);
 }
