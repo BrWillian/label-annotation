@@ -21,7 +21,6 @@ public:
     bool drawStarted;
     void setPenColor(const QColor color);
     QSize setAreaDraw(QSize size, QPixmap image);
-    void setText(QString text);
     void GenerateColor();
     void setLabels(std::vector<std::string> tmpLabel);
     QStringList TransformLabels();
@@ -34,10 +33,11 @@ private:
     QPixmap mPix;
     QPixmap mPixtemp;
     QRect mRect;
-    QString labelText;
-    QLabel *label = new QLabel(this);
+    QLabel *label;
+    QDialog *dialog;
+    bool windowActive = true;
     std::vector<std::string> labels;
-    QColor myPenColor;
+    QColor myPenColor = QColor(Qt::blue);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

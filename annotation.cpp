@@ -15,7 +15,7 @@ annotation::annotation(QWidget *parent) :
     //ui->setupUi(this);
     mousePressed = false;
     drawStarted = false;
-
+    label = new QLabel(this);
     std::srand(42);
 }
 QSize annotation::setAreaDraw(QSize size, QPixmap image)
@@ -28,41 +28,43 @@ QSize annotation::setAreaDraw(QSize size, QPixmap image)
 
     return mPix.size();
 }
-void annotation::setText(QString text)
-{
-    this->labelText = text;
-}
 void annotation::mousePressEvent(QMouseEvent* event)
 {
-    mousePressed = true;
-    GenerateColor();
-    mRect.setTopLeft(event->pos());
-    mRect.setBottomRight(event->pos());
+    if(windowActive)
+    {
+        mousePressed = true;
+        GenerateColor();
+        mRect.setTopLeft(event->pos());
+        mRect.setBottomRight(event->pos());
+    }
 }
 void annotation::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->type() == QEvent::MouseMove )
+    if(event->type() == QEvent::MouseMove  && windowActive)
     {
         mRect.setBottomRight(event->pos());
     }
     update();
-
 }
 void annotation::mouseReleaseEvent(QMouseEvent *event)
 {
-    mousePressed = false;
-    QDialog *dialog = new QDialog(this);
-    dialog->setWindowTitle("Select Class");
-    dialog->resize(125,125);
-    dialog->move(event->globalPos());
-    QListView* listlabel = new QListView(dialog);
-    listlabel->resize(100,100);
-    listlabel->setGeometry(0,25,125,100);
-    listlabel->updateGeometry();
-    listlabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    listlabel->setModel(new QStringListModel(TransformLabels()));
-    connect(listlabel, &QListView::doubleClicked, this, &annotation::on_listlabel_doubleClicked);
-    dialog->show();
+    if(windowActive)
+    {
+        mousePressed = false;
+        dialog = new QDialog(this, Qt::WindowTitleHint | Qt::CustomizeWindowHint);
+        dialog->setWindowTitle("Select Class");
+        dialog->setFixedSize(134,134);
+        dialog->move(event->globalPos());
+        QListView* listlabel = new QListView(dialog);
+
+        listlabel->setGeometry(2,2,130,130);
+        listlabel->updateGeometry();
+        listlabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        listlabel->setModel(new QStringListModel(TransformLabels()));
+        connect(listlabel, &QListView::doubleClicked, this, &annotation::on_listlabel_doubleClicked);
+        dialog->show();
+        windowActive = false;
+    }
     update();
 }
 void annotation::paintEvent(QPaintEvent *event)
@@ -83,11 +85,6 @@ void annotation::paintEvent(QPaintEvent *event)
         tempPainter.setPen(QPen(myPenColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         tempPainter.drawRect(mRect);
         painter.drawPixmap(0,0, mPix);
-    }if(!mousePressed)
-    {
-        int x = mRect.x();
-        int y = mRect.y();
-        //painter.drawText(x-2,y,labelText);
     }
     painter.end();
 }
@@ -114,9 +111,12 @@ QStringList annotation::TransformLabels()
     }
 
     return tmpList;
-    //ui->listView->setModel(new QStringListModel(list));
 }
 void annotation::on_listlabel_doubleClicked(const QModelIndex &index)
 {
-    std::cout<<"DEU CERTO";
+    windowActive = true;
+    QString strtemp = index.data().toString();
+    std::cout<<strtemp.toStdString()<<index.row();
+    //std::cout<<mRect.x()<<" "<<mRect.y()<<" "<<mRect.width()<<" "<<mRect.height();
+    dialog->close();
 }
