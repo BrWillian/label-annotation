@@ -1,15 +1,15 @@
-#include "annotation.h"
-#include "QMouseEvent"
+#include <QStringListModel>
+#include <annotation.h>
+#include <QMouseEvent>
+#include <QListView>
 #include <QPainter>
-#include "QSize"
-#include <iostream>
 #include <stdlib.h>
-#include "QDialog"
-#include "QListView"
-#include "QStringListModel"
+#include <QDialog>
+#include <QSize>
+#include <filesys.h>
 
 annotation::annotation(QWidget *parent) :
-    QWidget(parent)//,
+    QWidget(parent)
    // ui(new Ui::annotation)
 {
     //ui->setupUi(this);
@@ -19,8 +19,10 @@ annotation::annotation(QWidget *parent) :
     label = new QLabel(this);
     std::srand(42);
 }
-QSize annotation::setAreaDraw(QSize size, QPixmap image)
+QSize annotation::setAreaDraw(QSize size, QPixmap image, string imgName, string imgDir)
 {
+    this->imgName = imgName;
+    this->imgDir = imgDir;
 
     mPix = image.scaled(size.width()-30,size.height()-50, Qt::KeepAspectRatio);
 
@@ -34,14 +36,14 @@ void annotation::mousePressEvent(QMouseEvent* event)
     if(windowActive)
     {
         mousePressed = true;
-        GenerateColor();
+        generateColor();
         mRect.setTopLeft(event->pos());
         mRect.setBottomRight(event->pos());
     }
 }
 void annotation::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->type() == QEvent::MouseMove  && windowActive)
+    if(event->type() == QEvent::MouseMove && windowActive)
     {
         mRect.setBottomRight(event->pos());
     }
@@ -56,13 +58,13 @@ void annotation::mouseReleaseEvent(QMouseEvent *event)
         dialog->setWindowTitle("Select Class");
         dialog->setFixedSize(134,134);
         dialog->move(event->globalPos());
-        QListView* listlabel = new QListView(dialog);
+        QListView* listLabel = new QListView(dialog);
 
-        listlabel->setGeometry(2,2,130,130);
-        listlabel->updateGeometry();
-        listlabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        listlabel->setModel(new QStringListModel(TransformLabels()));
-        connect(listlabel, &QListView::doubleClicked, this, &annotation::on_listlabel_doubleClicked);
+        listLabel->setGeometry(2,2,130,130);
+        listLabel->updateGeometry();
+        listLabel->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        listLabel->setModel(new QStringListModel(TransformLabels()));
+        connect(listLabel, &QListView::doubleClicked, this, &annotation::listLabel_doubleClicked);
         dialog->show();
         windowActive = false;
     }
@@ -89,7 +91,7 @@ void annotation::paintEvent(QPaintEvent *event)
     }
     painter.end();
 }
-void annotation::GenerateColor()
+void annotation::generateColor()
 {
     unsigned char r, g, b;
     r = std::rand() % 255;
@@ -113,11 +115,22 @@ QStringList annotation::TransformLabels()
 
     return tmpList;
 }
-void annotation::on_listlabel_doubleClicked(const QModelIndex &index)
+void annotation::listLabel_doubleClicked(const QModelIndex &index)
 {
     windowActive = true;
-    QString strtemp = index.data().toString();
-    std::cout<<strtemp.toStdString()<<index.row();
-    //std::cout<<mRect.x()<<" "<<mRect.y()<<" "<<mRect.width()<<" "<<mRect.height();
     dialog->close();
+
+    yoloFormart(index.row(), mRect.x(), mRect.y(), mRect.width(), mRect.height());
+
+    filesys *file = new filesys;
+    file->writeAnnotation(imgDir, "Teste", result);
+}
+void annotation::yoloFormart(int index, double x, double y, double w, double h)
+{
+    int width = mPix.width();
+    int height = mPix.height();
+
+    this->result = std::to_string(index) + " " + std::to_string(x/width) \
+            + " " + std::to_string(y/height) + " " + std::to_string(w/width) \
+                                   + " " + std::to_string(h/height) + "\n";
 }

@@ -7,15 +7,11 @@
 #include <annotation.h>
 #include <QtWidgets>
 
-//Defines
-#define Null    ""
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     file = new filesys;
     file->loadLabels();
@@ -38,9 +34,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionopen_triggered()
 {
-    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    if(!(path.toStdString() == Null))
+    if(!(path.toStdString() == ""))
     {
         std::thread t1(&filesys::listDir, file, path.toStdString());
         t1.join();
@@ -59,27 +55,7 @@ void MainWindow::on_actionopen_triggered()
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
-    ui->mdiArea->closeAllSubWindows();
-
-    img = QPixmap(index.data().toString());
-    customWidget = new annotation();
-    ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
-
-
-    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img);
-    customWidget->parentWidget()->resize(size);
-    customWidget->parentWidget()->updateGeometry();
-
-    file->loadLabels();
-    auto labels = file->getLabels();
-    customWidget->setLabels(labels);
-
-
-    ui->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    ui->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    customWidget->show();
-
-    ui->mdiArea->setMaximumSize(size);
+    displayImage(index.data().toString());
 }
 void MainWindow::on_pushButton_clicked()
 {
@@ -111,4 +87,26 @@ void MainWindow::on_radioButton_clicked(bool checked)
         ui->comboBox->setEnabled(false);
         ui->comboBox->clear();
     }
+}
+void MainWindow::displayImage(QString location)
+{
+    ui->mdiArea->closeAllSubWindows();
+
+    QPixmap img(location);
+    customWidget = new annotation();
+    ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
+
+    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, location.toStdString(), path.toStdString());
+    customWidget->parentWidget()->resize(size);
+    customWidget->parentWidget()->updateGeometry();
+
+    file->loadLabels();
+    auto labels = file->getLabels();
+    customWidget->setLabels(labels);
+
+    ui->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    customWidget->show();
+
+    ui->mdiArea->setMaximumSize(size);
 }

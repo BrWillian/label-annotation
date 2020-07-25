@@ -17,6 +17,7 @@ public:
     vector<string> getLabels();
     static void makeLabels(string labels);
     void loadLabels();
+    void writeAnnotation(string dir, string archiveName, string annotation);
 };
 
 #endif // FILESYS_H

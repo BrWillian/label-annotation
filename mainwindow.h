@@ -24,10 +24,11 @@ private slots:
     void on_listView_doubleClicked(const QModelIndex &index);
     void on_pushButton_clicked();
     void on_radioButton_clicked(bool checked);
+    void displayImage(QString location);
 private:
     Ui::MainWindow *ui;
     filesys *file;
-    QPixmap img;
+    QString path;
 };
 
 #endif // MAINWINDOW_H

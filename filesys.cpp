@@ -1,6 +1,7 @@
 #include <filesys.h>
 #include <experimental/filesystem>
 #include <iostream>
+#include <sstream>
 
 namespace fs = std::experimental::filesystem;
 
@@ -51,7 +52,8 @@ void filesys::loadLabels()
         while(!(file.eof()))
         {
             getline (file,line);
-            labels.push_back(line);
+            if(line != "")
+                labels.push_back(line);
         }
     }
     file.close();
@@ -59,4 +61,16 @@ void filesys::loadLabels()
 vector<string> filesys::getLabels()
 {
     return labels;
+}
+void filesys::writeAnnotation(string dir, string archiveName, string annotation)
+{
+    ofstream outfile;
+    outfile.open(dir+"/"+archiveName+".txt", ios_base::app);
+
+    if(outfile.is_open() && outfile.good())
+    {
+        outfile << annotation;
+        outfile.close();
+    }
+
 }

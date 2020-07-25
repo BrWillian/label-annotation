@@ -18,23 +18,31 @@ class annotation : public QWidget
 public:
     explicit annotation(QWidget *parent = 0);
     void setPenColor(const QColor color);
-    QSize setAreaDraw(QSize size, QPixmap image);
-    void GenerateColor();
+    QSize setAreaDraw(QSize size, QPixmap image, std::string imgName, std::string imgDir);
+    void generateColor();
     void setLabels(std::vector<std::string> tmpLabel);
     QStringList TransformLabels();
-    void on_listlabel_doubleClicked(const QModelIndex &index);
+    void listLabel_doubleClicked(const QModelIndex &index);
+    void yoloFormart(int index, double x, double y, double w, double h);
+    std::string getResult();
+
 private:
     Ui::annotation *ui;
+    QLabel *label;
+    QDialog *dialog;
     QPainter painter;
     QPixmap mPix;
     QColor myPenColor;
     QRect mRect;
-    QLabel *label;
-    QDialog *dialog;
     std::vector<std::string> labels;
     bool windowActive;
     bool mousePressed;
     bool drawStarted;
+    std::string labelClass;
+    std::string result;
+    std::string imgDir;
+    std::string imgName;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
