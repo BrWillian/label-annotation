@@ -96,7 +96,9 @@ void MainWindow::displayImage(QString location)
     customWidget = new annotation();
     ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
 
-    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, location.toStdString(), path.toStdString());
+    string stem = file->returnStem(location.toStdString());
+    file->removeFile(path.toStdString()+"/"+stem+".txt");
+    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, stem, path.toStdString());
     customWidget->parentWidget()->resize(size);
     customWidget->parentWidget()->updateGeometry();
 

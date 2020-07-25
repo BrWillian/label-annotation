@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QSize>
 #include <filesys.h>
+#include <iostream>
 
 annotation::annotation(QWidget *parent) :
     QWidget(parent)
@@ -123,7 +124,7 @@ void annotation::listLabel_doubleClicked(const QModelIndex &index)
     yoloFormart(index.row(), mRect.x(), mRect.y(), mRect.width(), mRect.height());
 
     filesys *file = new filesys;
-    file->writeAnnotation(imgDir, "Teste", result);
+    file->writeAnnotation(imgDir, imgName, result);
 }
 void annotation::yoloFormart(int index, double x, double y, double w, double h)
 {
@@ -133,4 +134,6 @@ void annotation::yoloFormart(int index, double x, double y, double w, double h)
     this->result = std::to_string(index) + " " + std::to_string(x/width) \
             + " " + std::to_string(y/height) + " " + std::to_string(w/width) \
                                    + " " + std::to_string(h/height) + "\n";
+
+    std::replace(result.begin(), result.end(), ',', '.');
 }

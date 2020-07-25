@@ -17,6 +17,7 @@ void filesys::listDir(string dir)
         if(directory.path().extension() == ".png" || directory.path().extension() == ".jpeg" || directory.path().extension() == ".jpg")
         {
             imgs.push_back(directory.path());
+            //imgs_stem.push(directory.path().stem());
         }
     }
 }
@@ -71,6 +72,32 @@ void filesys::writeAnnotation(string dir, string archiveName, string annotation)
     {
         outfile << annotation;
         outfile.close();
+    }
+
+}
+std::string filesys::returnStem(string str)
+{
+    const size_t last_slash_idx = str.find_last_of("\\/");
+    if (std::string::npos != last_slash_idx)
+    {
+        str.erase(0, last_slash_idx + 1);
+    }
+
+    const size_t period_idx = str.rfind('.');
+    if (std::string::npos != period_idx)
+    {
+        str.erase(period_idx);
+    }
+    return str;
+}
+void filesys::removeFile(string nameFile)
+{
+    try{
+        std::experimental::filesystem::remove(nameFile);
+        std::cout<<nameFile;
+    }catch(const std::experimental::filesystem::filesystem_error & err)
+    {
+        std::cout<<"Nao removeu!";
     }
 
 }
