@@ -97,7 +97,7 @@ void filesys::removeFile(string nameFile)
         std::cout<<nameFile;
     }catch(const std::experimental::filesystem::filesystem_error & err)
     {
-        std::cout<<"Nao removeu!";
+
     }
 
 }
