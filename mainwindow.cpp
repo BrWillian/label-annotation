@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->radioButton_2->setChecked(true);
+    ui->radioButton->setEnabled(false);
     customWidget = NULL;
 
     file = new filesys;
@@ -55,6 +56,8 @@ void MainWindow::on_actionopen_triggered()
         }
         ui->listView->setModel(new QStringListModel(list));
 
+        ui->radioButton->setEnabled(true);
+
         QString strtmp = QString::fromStdString(imgs.at(npos));
         displayImage(strtmp);
         QModelIndex ind = ui->listView->model()->index(npos, 0);
@@ -80,6 +83,9 @@ void MainWindow::on_pushButton_clicked()
 }
 void MainWindow::on_radioButton_clicked(bool checked)
 {
+    QString strtmp = QString::fromStdString(imgs.at(npos));
+    displayImage(strtmp);
+
     if(checked)
     {
         ui->comboBox->setEnabled(true);
@@ -93,6 +99,7 @@ void MainWindow::on_radioButton_clicked(bool checked)
         {
             ui->comboBox->addItem(QString::fromStdString(*it));
         }
+        ui->comboBox->showPopup();
     }
     else{
         ui->comboBox->setEnabled(false);
@@ -107,10 +114,20 @@ void MainWindow::displayImage(QString location)
     customWidget = new annotation();
     ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
 
+    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img);
+
     string stem = file->returnStem(location.toStdString());
-    //file->removeFile(path.toStdString()+"/"+stem+".txt");
+    file->removeFile(path.toStdString()+"/"+stem+".txt");
     string pathtemp = path.toStdString();
-    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, stem, pathtemp);
+
+    if(ui->radioButton->isChecked())
+    {
+        customWidget->setConfig(stem, pathtemp, format, ui->comboBox->currentText().toStdString());
+    }else
+    {
+        customWidget->setConfig(stem, pathtemp, format, "");
+    }
+
     customWidget->parentWidget()->resize(size);
     customWidget->parentWidget()->updateGeometry();
 
@@ -135,11 +152,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             npos = npos+1;
             try{
                 strtmp = imgs.at(npos);
+                displayImage(QString::fromStdString(strtmp));
             }catch(const std::out_of_range& oor){
                 npos = imgs.size()-1;
                 strtmp = imgs.at(npos);
+                QMessageBox::information(this, "Label Annotation", "You finished all images!");
             }
-            displayImage(QString::fromStdString(strtmp));
         }
 
         if(event->key() == Qt::Key_A)
@@ -148,15 +166,29 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 npos = npos-1;
             try{
                 strtmp = imgs.at(npos);
+                displayImage(QString::fromStdString(strtmp));
             }catch(const std::out_of_range& oor){
                 npos = 0;
                 strtmp = imgs.at(npos);
             }
-            displayImage(QString::fromStdString(strtmp));
         }
 
         QModelIndex ind = ui->listView->model()->index(npos, 0);
         ui->listView->setCurrentIndex(ind);
         ui->listView->selectionModel()->select(ind, QItemSelectionModel::Select);
     }
+}
+
+void MainWindow::on_radioButton_2_clicked()
+{
+    format = "yolo";
+}
+
+void MainWindow::on_radioButton_3_clicked()
+{
+    format = "pascalvoc";
+}
+void MainWindow::on_comboBox_activated(const QString &arg1)
+{
+    ui->comboBox->setEnabled(false);
 }

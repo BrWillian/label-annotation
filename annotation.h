@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <vector>
 
+using namespace std;
+
 namespace Ui {
 class annotation;
 }
@@ -18,13 +20,14 @@ class annotation : public QWidget
 public:
     explicit annotation(QWidget *parent = 0);
     void setPenColor(const QColor color);
-    QSize setAreaDraw(QSize size, QPixmap image, std::string imgName, std::string imgDir);
+    QSize setAreaDraw(QSize size, QPixmap image);
     void generateColor();
-    void setLabels(std::vector<std::string> tmpLabel);
+    void setLabels(vector<string> tmpLabel);
     QStringList TransformLabels();
     void listLabel_doubleClicked(const QModelIndex &index);
     void yoloFormart(int index, double x, double y, double w, double h);
-    std::string getResult();
+    string getResult();
+    void setConfig(string imgName, string imgDir, string format=NULL, string defaultLabel=NULL);
 
 private:
     Ui::annotation *ui;
@@ -34,14 +37,16 @@ private:
     QPixmap mPix;
     QColor myPenColor;
     QRect mRect;
-    std::vector<std::string> labels;
+    vector<string> labels;
     bool windowActive;
     bool mousePressed;
     bool drawStarted;
-    std::string labelClass;
-    std::string result;
-    std::string imgDir;
-    std::string imgName;
+    string labelClass;
+    string result;
+    string imgDir;
+    string imgName;
+    string format;
+    string defaultLabel;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

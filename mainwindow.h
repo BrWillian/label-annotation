@@ -29,10 +29,17 @@ private slots:
 
     // events keys
     void keyPressEvent(QKeyEvent *event);
+    void on_radioButton_2_clicked();
+
+    void on_radioButton_3_clicked();
+
+    void on_comboBox_activated(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     filesys *file;
     QString path;
+    string format;
     std::vector<std::string> imgs;
     int npos = 0;
 };
