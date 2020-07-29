@@ -6,12 +6,16 @@
 #include <filesys.h>
 #include <annotation.h>
 #include <QtWidgets>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->radioButton_2->setChecked(true);
+    customWidget = NULL;
 
     file = new filesys;
     file->loadLabels();
@@ -41,7 +45,7 @@ void MainWindow::on_actionopen_triggered()
         std::thread t1(&filesys::listDir, file, path.toStdString());
         t1.join();
 
-        auto imgs = file->getImgs();
+        imgs = file->getImgs();
 
         QStringList list;
 
@@ -50,6 +54,12 @@ void MainWindow::on_actionopen_triggered()
             list << QString::fromStdString(*it);
         }
         ui->listView->setModel(new QStringListModel(list));
+
+        QString strtmp = QString::fromStdString(imgs.at(npos));
+        displayImage(strtmp);
+        QModelIndex ind = ui->listView->model()->index(npos, 0);
+        ui->listView->setCurrentIndex(ind);
+        ui->listView->selectionModel()->select(ind, QItemSelectionModel::Select);
     }
 }
 
@@ -63,6 +73,7 @@ void MainWindow::on_pushButton_clicked()
     if(!labels.isEmpty())
     {
         file->makeLabels(labels.toStdString());
+        ui->radioButton->setAutoExclusive(false);
         ui->radioButton->setChecked(false);
         ui->comboBox->clear();
     }
@@ -97,8 +108,9 @@ void MainWindow::displayImage(QString location)
     ui->mdiArea->addSubWindow(customWidget, Qt::Window | Qt::FramelessWindowHint);
 
     string stem = file->returnStem(location.toStdString());
-    file->removeFile(path.toStdString()+"/"+stem+".txt");
-    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, stem, path.toStdString());
+    //file->removeFile(path.toStdString()+"/"+stem+".txt");
+    string pathtemp = path.toStdString();
+    QSize size = customWidget->setAreaDraw(ui->groupBox_2->size(), img, stem, pathtemp);
     customWidget->parentWidget()->resize(size);
     customWidget->parentWidget()->updateGeometry();
 
@@ -111,4 +123,40 @@ void MainWindow::displayImage(QString location)
     customWidget->show();
 
     ui->mdiArea->setMaximumSize(size);
+}
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(!imgs.empty())
+    {
+        std::string strtmp;
+
+        if(event->key() == Qt::Key_D)
+        {
+            npos = npos+1;
+            try{
+                strtmp = imgs.at(npos);
+            }catch(const std::out_of_range& oor){
+                npos = imgs.size()-1;
+                strtmp = imgs.at(npos);
+            }
+            displayImage(QString::fromStdString(strtmp));
+        }
+
+        if(event->key() == Qt::Key_A)
+        {
+            if(npos >= 0)
+                npos = npos-1;
+            try{
+                strtmp = imgs.at(npos);
+            }catch(const std::out_of_range& oor){
+                npos = 0;
+                strtmp = imgs.at(npos);
+            }
+            displayImage(QString::fromStdString(strtmp));
+        }
+
+        QModelIndex ind = ui->listView->model()->index(npos, 0);
+        ui->listView->setCurrentIndex(ind);
+        ui->listView->selectionModel()->select(ind, QItemSelectionModel::Select);
+    }
 }

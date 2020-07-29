@@ -17,7 +17,6 @@ void filesys::listDir(string dir)
         if(directory.path().extension() == ".png" || directory.path().extension() == ".jpeg" || directory.path().extension() == ".jpg")
         {
             imgs.push_back(directory.path());
-            //imgs_stem.push(directory.path().stem());
         }
     }
 }
@@ -94,7 +93,6 @@ void filesys::removeFile(string nameFile)
 {
     try{
         std::experimental::filesystem::remove(nameFile);
-        std::cout<<nameFile;
     }catch(const std::experimental::filesystem::filesystem_error & err)
     {
 

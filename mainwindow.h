@@ -25,10 +25,16 @@ private slots:
     void on_pushButton_clicked();
     void on_radioButton_clicked(bool checked);
     void displayImage(QString location);
+
+
+    // events keys
+    void keyPressEvent(QKeyEvent *event);
 private:
     Ui::MainWindow *ui;
     filesys *file;
     QString path;
+    std::vector<std::string> imgs;
+    int npos = 0;
 };
 
 #endif // MAINWINDOW_H
