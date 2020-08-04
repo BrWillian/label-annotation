@@ -1,15 +1,12 @@
-#include <QStringListModel>
 #include <annotation.h>
+#include <filesys.h>
+#include <QStringListModel>
 #include <QMouseEvent>
 #include <QListView>
 #include <QPainter>
 #include <stdlib.h>
 #include <QDialog>
 #include <QSize>
-#include <filesys.h>
-#include <iostream>
-
-using namespace std;
 
 annotation::annotation(QWidget *parent) :
     QWidget(parent)

@@ -6,7 +6,6 @@
 #include <filesys.h>
 #include <annotation.h>
 #include <QtWidgets>
-#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->radioButton_2->setChecked(true);
+    ui->radioButton_3->setEnabled(false);
     ui->radioButton->setEnabled(false);
     customWidget = NULL;
 
@@ -58,6 +58,7 @@ void MainWindow::on_actionopen_triggered()
 
         ui->radioButton->setEnabled(true);
 
+        npos = 0;
         QString strtmp = QString::fromStdString(imgs.at(npos));
         displayImage(strtmp);
         QModelIndex ind = ui->listView->model()->index(npos, 0);
@@ -69,6 +70,7 @@ void MainWindow::on_actionopen_triggered()
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
     displayImage(index.data().toString());
+    npos = index.row();
 }
 void MainWindow::on_pushButton_clicked()
 {
@@ -80,6 +82,9 @@ void MainWindow::on_pushButton_clicked()
         ui->radioButton->setChecked(false);
         ui->comboBox->clear();
     }
+    QMessageBox::information(this, "Label Annotation", "Labels successfully added!");
+    QString strtmp = QString::fromStdString(imgs.at(npos));
+    displayImage(strtmp);
 }
 void MainWindow::on_radioButton_clicked(bool checked)
 {
@@ -188,7 +193,10 @@ void MainWindow::on_radioButton_3_clicked()
 {
     format = "pascalvoc";
 }
+
 void MainWindow::on_comboBox_activated(const QString &arg1)
 {
     ui->comboBox->setEnabled(false);
+    QString strtmp = QString::fromStdString(imgs.at(npos));
+    displayImage(strtmp);
 }

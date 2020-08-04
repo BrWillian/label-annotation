@@ -1,24 +1,27 @@
 #include <filesys.h>
-#include <experimental/filesystem>
-#include <iostream>
 #include <sstream>
-
-namespace fs = std::experimental::filesystem;
+#include <QDir>
 
 filesys::filesys()
 {
 
 }
-void filesys::listDir(string dir)
+void filesys::listDir(string path)
 {
     imgs.clear();
-    for (const auto & directory: fs::directory_iterator(dir))
+    QStringList nameFilter;
+    nameFilter << "*.png" << "*.jpg" << "*.gif" << "*.jpeg";
+    QDir dir(QString::fromStdString(path));
+    dir.setNameFilters(nameFilter);
+    dir.setSorting(QDir::LocaleAware);
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+
+    foreach(const QFileInfo& fi, dir.entryList())
     {
-        if(directory.path().extension() == ".png" || directory.path().extension() == ".jpeg" || directory.path().extension() == ".jpg")
-        {
-            imgs.push_back(directory.path());
-        }
+        QString strtmp = QString::fromStdString(path)+QDir::separator()+fi.fileName();
+        imgs.push_back(strtmp.toStdString());
     }
+
 }
 vector<string> filesys::getImgs()
 {
@@ -26,14 +29,17 @@ vector<string> filesys::getImgs()
 }
 void filesys::makeLabels(string labels)
 {
-    if(!(fs::is_directory("data")))
+    QDir dir;
+
+    if(!(dir.exists("data")))
     {
-        fs::create_directory("data");
+        dir.mkdir("data");
     }
 
     ofstream outfile;
 
-    outfile.open("data/classes.txt");
+    QString strtmp = QString("data")+QDir::separator()+QString("classes.txt");
+    outfile.open(strtmp.toStdString());
 
     if(outfile.is_open() && outfile.good())
     {
@@ -45,7 +51,8 @@ void filesys::makeLabels(string labels)
 void filesys::loadLabels()
 {
     string line;
-    ifstream file("data/classes.txt");
+    QString strtmp = QString("data")+QDir::separator()+QString("classes.txt");
+    ifstream file(strtmp.toStdString());
     if(file.is_open())
     {
         labels.clear();
@@ -65,7 +72,8 @@ vector<string> filesys::getLabels()
 void filesys::writeAnnotation(string dir, string archiveName, string annotation)
 {
     ofstream outfile;
-    outfile.open(dir+"/"+archiveName+".txt", ios_base::app);
+    QString strtmp = QString::fromStdString(dir)+QDir::separator()+QString::fromStdString(archiveName)+QString(".txt");
+    outfile.open(strtmp.toStdString(), ios_base::app);
 
     if(outfile.is_open() && outfile.good())
     {
@@ -92,9 +100,11 @@ std::string filesys::returnStem(string str)
 void filesys::removeFile(string nameFile)
 {
     try{
-        std::experimental::filesystem::remove(nameFile);
-    }catch(const std::experimental::filesystem::filesystem_error & err)
-    {
+        QDir dir;
+        dir.remove(QString::fromStdString(nameFile));
+        //std::experimental::filesystem::remove(nameFile);
+    }
+    catch(int err){
 
     }
 

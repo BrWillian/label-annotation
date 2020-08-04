@@ -25,14 +25,9 @@ private slots:
     void on_pushButton_clicked();
     void on_radioButton_clicked(bool checked);
     void displayImage(QString location);
-
-
-    // events keys
     void keyPressEvent(QKeyEvent *event);
     void on_radioButton_2_clicked();
-
     void on_radioButton_3_clicked();
-
     void on_comboBox_activated(const QString &arg1);
 
 private:
@@ -41,7 +36,7 @@ private:
     QString path;
     string format;
     std::vector<std::string> imgs;
-    int npos = 0;
+    int npos;
 };
 
 #endif // MAINWINDOW_H
