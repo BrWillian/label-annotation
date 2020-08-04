@@ -12,9 +12,9 @@ void filesys::listDir(string path)
     QStringList nameFilter;
     nameFilter << "*.png" << "*.jpg" << "*.gif" << "*.jpeg";
     QDir dir(QString::fromStdString(path));
-    dir.setNameFilters(nameFilter);
-    dir.setSorting(QDir::LocaleAware);
+    dir.setSorting(QDir::Name);
     dir.setFilter(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+    dir.setNameFilters(nameFilter);
 
     foreach(const QFileInfo& fi, dir.entryList())
     {
@@ -80,7 +80,6 @@ void filesys::writeAnnotation(string dir, string archiveName, string annotation)
         outfile << annotation;
         outfile.close();
     }
-
 }
 std::string filesys::returnStem(string str)
 {
@@ -102,7 +101,6 @@ void filesys::removeFile(string nameFile)
     try{
         QDir dir;
         dir.remove(QString::fromStdString(nameFile));
-        //std::experimental::filesystem::remove(nameFile);
     }
     catch(int err){
 

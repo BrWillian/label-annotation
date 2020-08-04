@@ -58,12 +58,15 @@ void MainWindow::on_actionopen_triggered()
 
         ui->radioButton->setEnabled(true);
 
-        npos = 0;
-        QString strtmp = QString::fromStdString(imgs.at(npos));
-        displayImage(strtmp);
-        QModelIndex ind = ui->listView->model()->index(npos, 0);
-        ui->listView->setCurrentIndex(ind);
-        ui->listView->selectionModel()->select(ind, QItemSelectionModel::Select);
+        if(!(imgs.empty()))
+        {
+            npos = 0;
+            QString strtmp = QString::fromStdString(imgs.at(npos));
+            displayImage(strtmp);
+            QModelIndex ind = ui->listView->model()->index(npos, 0);
+            ui->listView->setCurrentIndex(ind);
+            ui->listView->selectionModel()->select(ind, QItemSelectionModel::Select);
+        }
     }
 }
 
@@ -83,13 +86,19 @@ void MainWindow::on_pushButton_clicked()
         ui->comboBox->clear();
     }
     QMessageBox::information(this, "Label Annotation", "Labels successfully added!");
-    QString strtmp = QString::fromStdString(imgs.at(npos));
-    displayImage(strtmp);
+    if(!(imgs.empty()))
+    {
+        QString strtmp = QString::fromStdString(imgs.at(npos));
+        displayImage(strtmp);
+    }
 }
 void MainWindow::on_radioButton_clicked(bool checked)
 {
-    QString strtmp = QString::fromStdString(imgs.at(npos));
-    displayImage(strtmp);
+    if(!(imgs.empty()))
+    {
+        QString strtmp = QString::fromStdString(imgs.at(npos));
+        displayImage(strtmp);
+    }
 
     if(checked)
     {
@@ -197,6 +206,9 @@ void MainWindow::on_radioButton_3_clicked()
 void MainWindow::on_comboBox_activated(const QString &arg1)
 {
     ui->comboBox->setEnabled(false);
-    QString strtmp = QString::fromStdString(imgs.at(npos));
-    displayImage(strtmp);
+    if(!(imgs.empty()))
+    {
+        QString strtmp = QString::fromStdString(imgs.at(npos));
+        displayImage(strtmp);
+    }
 }
