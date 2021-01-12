@@ -151,8 +151,8 @@ void annotation::yoloFormart(int index, double x, double y, double w, double h)
     int width = mPix.width();
     int height = mPix.height();
 
-    this->result = to_string(index) + " " + to_string(x/width) \
-            + " " + to_string(y/height) + " " + to_string(w/width) \
+    this->result = to_string(index) + " " + to_string((x + w / 2) / width) \
+            + " " + to_string((y + h / 2) / height) + " " + to_string(w/width) \
                                    + " " + to_string(h/height) + "\n";
 
     replace(result.begin(), result.end(), ',', '.');
